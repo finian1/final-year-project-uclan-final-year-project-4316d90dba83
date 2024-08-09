@@ -4,7 +4,6 @@
 #include "Agent.h"
 #include "Actions.h"
 
-
 #include <algorithm>
 #include <queue>
 #include <set>
@@ -61,8 +60,7 @@ void Brain::UpdateWeights()
 	mReward = mControllingAgent->GetActionReward();
 	if (mLastTriggeredNeuron != nullptr && mControllingAgent->ShouldLearn())
 	{
-		//AdjustWeights();
-		SimpleAdjustWeights();
+		currentAlgorithm.AdjustWeights(*this);
 	}
 }
 
@@ -222,184 +220,6 @@ void Brain::AddNewHiddenLayer(int NetworkPos)
 		mLayerIDCounter++;
 		mLayerOrder.insert(std::next(it, NetworkPos), mLayerIDCounter);
 		mLayers[mLayerIDCounter] = Layer();
-	}
-}
-
-void Brain::AdjustWeights()
-{
-	float currentReward = mReward;
-	mObjectiveFunction = 0;
-	//We need to: Simulate the future time steps that the agent would most likely take based on the new state
-	//Add the reward gained based on these future steps, adjusted by the discount factor
-
-	//Data that needs to be reset after predictions:
-	//Agent position
-	//Agent energy
-	std::vector<ActionNeuron*> activatedNeurons(mFutureDepth + 1);
-	std::vector<float> actionRewards(mFutureDepth + 1);
-	std::vector<float> actionLossValues(mFutureDepth + 1);
-	std::vector<float> probabilityValues(mFutureDepth + 1);
-	activatedNeurons[0] = mLastTriggeredNeuron;
-	probabilityValues[0] = mLastTriggeredNeuron->Activation / mCurrentOverallActivationValue;
-	actionRewards[0] = mControllingAgent->GetActionReward();
-	mObjectiveFunction = actionRewards[0] * probabilityValues[0];
-	//currentReward += mControllingAgent->GetActionReward();
-	utility::Vector2i initialPos = mControllingAgent->GetPosition();
-	float initialEnergy = mControllingAgent->GetEnergy();
-	float initialHealth = mControllingAgent->GetHealth();
-	float initialOverallActivationValue = mCurrentOverallActivationValue;
-	mSimulating = true;
-	for (int i = 1; i < mFutureDepth + 1; i++)
-	{
-		mTrainingFutureDepth++;
-		mCurrentOverallActivationValue = 0.0f;
-		CalculateOutputWeights();
-		ActivateHighestActionNeuron();
-
-		activatedNeurons[i] = mLastTriggeredNeuron;
-		probabilityValues[i] = mLastTriggeredNeuron->Activation / mCurrentOverallActivationValue;
-
-		//Reward for the current action should be: diff in energy, and diff in how many nutrients are around the agent.
-		//mReward = mControllingAgent->GetActionReward() * pow(mDiscountFactor, i);
-		actionRewards[i] = mControllingAgent->GetActionReward() * pow(mDiscountFactor, i);
-		//currentReward += mReward;
-	}
-	mObjectiveFunctionHistory.push_back(mObjectiveFunction);
-	//Calculate discounted reward sum for each action
-	for (int i = actionRewards.size() - 2; i >= 0; i--)
-	{
-		actionRewards[i] += actionRewards[i + 1];
-	}
-
-	//Reset values
-	mTrainingFutureDepth = 0;
-	mSimulating = false;
-	mControllingAgent->SetPosition(initialPos);
-	mControllingAgent->SetEnergy(initialEnergy);
-	mControllingAgent->SetHealth(initialHealth);
-	mCurrentOverallActivationValue = initialOverallActivationValue;
-	for (int i = 0; i < mLayerOrder.size(); i++)
-	{
-		for (int j = 0; j < GetLayer(mLayerOrder[i])->NeuronIDs.size(); j++)
-		{
-			Neuron* neuron = GetNeuron(GetLayer(mLayerOrder[i])->NeuronIDs[j]);
-			if (neuron->HasBeenSimulated)
-			{
-				neuron->Activation = neuron->SimulationActivationHistory[0];
-				neuron->HasBeenSimulated = false;
-			}
-		}
-	}
-	//Probability of the given 
-	Neuron* triggeredNeuron = nullptr;
-	std::queue<Neuron*> mNeuronsToCheck;
-	std::queue<int> mLinksToShift;
-
-	for (int i = 0; i < mFutureDepth + 1; i++)
-	{
-		float L = actionRewards[i] * log(probabilityValues[i]);
-		Neuron* triggeredNeuron = activatedNeurons[i];
-		mNeuronsToCheck.push(triggeredNeuron);
-		while (mNeuronsToCheck.size() != 0)
-		{
-			Neuron* currentNeuron = mNeuronsToCheck.front();
-			mNeuronsToCheck.pop();
-			for (int i = 0; i < currentNeuron->InputLinks.size(); i++)
-			{
-				Link data = GetLinkData(currentNeuron->InputLinks[i]);
-				mLinksToShift.push(data.ID);
-				Neuron* inputNeuron = GetNeuron(data.InputNeuron);
-				mNeuronsToCheck.push(inputNeuron);
-			}
-		}
-
-		while (mLinksToShift.size() != 0)
-		{
-			Link data = GetLinkData(mLinksToShift.front());
-			float inputStrength = GetNeuron(data.InputNeuron)->SimulationActivationHistory[i];
-			float gradient = inputStrength * L * mLearningSpeed;
-			mLinks[mLinksToShift.front()].Weight -= gradient;
-			if (mLinks[mLinksToShift.front()].Weight < mMinimumLinkWeight)
-			{
-				mLinks[mLinksToShift.front()].Weight = mMinimumLinkWeight;
-			}
-			else if (mLinks[mLinksToShift.front()].Weight > mMaximumLinkWeight)
-			{
-				mLinks[mLinksToShift.front()].Weight = mMaximumLinkWeight;
-			}
-			mLinksToShift.pop();
-		}
-	}
-}
-
-void Brain::SimpleAdjustWeights()
-{
-	float currentReward = mReward;
-	float probability = mLastTriggeredNeuron->Activation / mCurrentOverallActivationValue;
-	//We need to: Simulate the future time steps that the agent would most likely take based on the new state
-	//Add the reward gained based on these future steps, adjusted by the discount factor
-
-	//Data that needs to be reset after predictions:
-	//Agent position
-	//Agent energy
-	utility::Vector2i initialPos = mControllingAgent->GetPosition();
-	float initialEnergy = mControllingAgent->GetEnergy();
-	float initialOverallActivationValue = mCurrentOverallActivationValue;
-	mSimulating = true;
-	for (int i = 1; i < mFutureDepth + 1; i++)
-	{
-		mCurrentOverallActivationValue = 0.0f;
-		CalculateOutputWeights();
-		ActivateHighestActionNeuron();
-		//Reward for the current action should be: diff in energy, and diff in how many nutrients are around the agent.
-		mReward = mControllingAgent->GetActionReward() * pow(mDiscountFactor, i);
-		currentReward += mReward;
-	}
-	mValue = currentReward;
-	mSimulating = false;
-	mControllingAgent->SetPosition(initialPos);
-	mControllingAgent->SetEnergy(initialEnergy);
-	mCurrentOverallActivationValue = initialOverallActivationValue;
-
-	float L = 0;
-	L = mValue * log(probability);
-
-	//TODO: optimize policy using L
-	//At least this time it's not *worse* than complete random, but it's not quite right.
-	Neuron* triggeredNeuron = mLastTriggeredNeuron;
-	std::queue<Neuron*> mNeuronsToCheck({ triggeredNeuron });
-	std::queue<int> mLinksToShift;
-	while (mNeuronsToCheck.size() != 0)
-	{
-		Neuron* currentNeuron = mNeuronsToCheck.front();
-		currentNeuron->Activation = currentNeuron->InitialEpisodeActivation;
-		mNeuronsToCheck.pop();
-		for (int i = 0; i < currentNeuron->InputLinks.size(); i++)
-		{
-			Link data = GetLinkData(currentNeuron->InputLinks[i]);
-			mLinksToShift.push(data.ID);
-			Neuron* inputNeuron = GetNeuron(data.InputNeuron);
-			mNeuronsToCheck.push(inputNeuron);
-		}
-	}
-	while (mLinksToShift.size() != 0)
-	{
-		Link data = GetLinkData(mLinksToShift.front());
-		float inputStrength = GetNeuron(data.InputNeuron)->Activation;
-		if (!dynamic_cast<ActionNeuron*>(GetNeuron(data.OutputNeuron)))
-		{
-			inputStrength *= GetNeuron(data.OutputNeuron)->Activation;
-		}
-		mLinks[mLinksToShift.front()].Weight -= mLearningSpeed * L * inputStrength;
-		if (mLinks[mLinksToShift.front()].Weight < mMinimumLinkWeight)
-		{
-			mLinks[mLinksToShift.front()].Weight = mMinimumLinkWeight;
-		}
-		else if (mLinks[mLinksToShift.front()].Weight > mMaximumLinkWeight)
-		{
-			mLinks[mLinksToShift.front()].Weight = mMaximumLinkWeight;
-		}
-		mLinksToShift.pop();
 	}
 }
 

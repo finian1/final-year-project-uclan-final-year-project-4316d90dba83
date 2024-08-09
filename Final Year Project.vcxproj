@@ -152,6 +152,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="EyeComponent.cpp" />
     <ClCompile Include="EyeInputs.cpp" />
+    <ClCompile Include="FullAlgorithm.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="implot_demo.cpp" />
     <ClCompile Include="implot_items.cpp" />
     <ClCompile Include="Inputs.cpp" />
+    <ClCompile Include="LearningAlgorithm.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MouthActions.cpp" />
     <ClCompile Include="MouthComponent.cpp" />
@@ -172,6 +174,7 @@
     <ClCompile Include="NeuronData.cpp" />
     <ClCompile Include="Neurons.cpp" />
     <ClCompile Include="SimGrid.cpp" />
+    <ClCompile Include="SimpleAlgorithm.cpp" />
     <ClCompile Include="stb.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +190,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="EyeComponent.h" />
     <ClInclude Include="EyeInputs.h" />
+    <ClInclude Include="FullAlgorithm.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -200,6 +204,7 @@
     <ClInclude Include="implot.h" />
     <ClInclude Include="implot_internal.h" />
     <ClInclude Include="Inputs.h" />
+    <ClInclude Include="LearningAlgorithm.h" />
     <ClInclude Include="MouthActions.h" />
     <ClInclude Include="MouthComponent.h" />
     <ClInclude Include="MovementActions.h" />
@@ -207,6 +212,7 @@
     <ClInclude Include="NeuronData.h" />
     <ClInclude Include="Neurons.h" />
     <ClInclude Include="SimGrid.h" />
+    <ClInclude Include="SimpleAlgorithm.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="UtilityTypes.h" />

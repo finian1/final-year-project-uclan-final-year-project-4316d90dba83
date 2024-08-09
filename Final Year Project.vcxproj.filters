@@ -43,6 +43,15 @@
     <Filter Include="Source Files\ComponentInputs">
       <UniqueIdentifier>{ef88204c-63d7-4389-a407-5329612d3f59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\NeuralNetwork">
+      <UniqueIdentifier>{02a6e956-6b78-4627-94b4-de70b941731a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NeuralNetwork\Algorithms">
+      <UniqueIdentifier>{6e2b7b39-3b60-426a-b8a6-d8075225e508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\NeuralNetwork\Algorithms">
+      <UniqueIdentifier>{9d2240e1-fa77-44c5-832b-cdc605daa18a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -126,20 +135,29 @@
     <ClCompile Include="Inputs.cpp">
       <Filter>Source Files\ComponentInputs</Filter>
     </ClCompile>
-    <ClCompile Include="Neurons.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="implot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="implot_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NeuronData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="implot_demo.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuronData.cpp">
+      <Filter>Source Files\NeuralNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="Neurons.cpp">
+      <Filter>Source Files\NeuralNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="LearningAlgorithm.cpp">
+      <Filter>Source Files\NeuralNetwork\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="FullAlgorithm.cpp">
+      <Filter>Source Files\NeuralNetwork\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleAlgorithm.cpp">
+      <Filter>Source Files\NeuralNetwork\Algorithms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +195,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cell.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Brain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ComponentAction.h">
@@ -236,9 +251,6 @@
     <ClInclude Include="Inputs.h">
       <Filter>Header Files\ComponentInput</Filter>
     </ClInclude>
-    <ClInclude Include="Neurons.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="implot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -246,7 +258,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NeuronData.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\NeuralNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="Neurons.h">
+      <Filter>Header Files\NeuralNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="Brain.h">
+      <Filter>Header Files\NeuralNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="LearningAlgorithm.h">
+      <Filter>Header Files\NeuralNetwork\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="FullAlgorithm.h">
+      <Filter>Header Files\NeuralNetwork\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleAlgorithm.h">
+      <Filter>Header Files\NeuralNetwork\Algorithms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

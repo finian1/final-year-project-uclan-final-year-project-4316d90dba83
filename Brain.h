@@ -10,6 +10,10 @@
 #include "Neurons.h"
 #include "NeuronData.h"
 
+#include "LearningAlgorithm.h"
+#include "FullAlgorithm.h"
+#include "SimpleAlgorithm.h"
+
 namespace data = cista::offset;
 
 class Agent;
@@ -113,7 +117,18 @@ struct Link
 class Brain
 {
 	friend class Brain;
-	
+
+	//TODO: currently all algorithms need to be assigned as friends to the brain.
+	//Could do with adding getters and setters that the algorithms can use instead of direct ref.
+	friend class LearningAlgorithm;
+	friend class FullAlgorithm;
+	friend class SimpleAlgorithm;
+
+private:
+
+	LearningAlgorithm currentAlgorithm = SimpleAlgorithm();
+
+
 	std::unordered_map<int, Neuron*> mNeurons;
 	std::unordered_map<long, Link> mLinks;
 	std::unordered_map<int, Layer> mLayers;
