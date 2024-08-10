@@ -35,6 +35,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
+//TODO: A lot of this can be moved into an input handler class
+
 //Handles mouse inputs for cell selection
 void ProcessMouseInputs(GLFWwindow* window, int button, int action, int mods)
 {
@@ -108,12 +110,6 @@ void ProcessKeyboardInputs(GLFWwindow* window, SimGrid& SimulationGrid)
     }
 }
 
-//Spawns an agent at a random location
-void SpawnAgent(SimGrid& SimulationGrid)
-{
-    SimulationGrid.AddAgent(RandomNumber(0, SimulationGrid.GetGridSize() - 1), RandomNumber(0, SimulationGrid.GetGridSize() - 1));
-}
-
 void RenderWindow(
     GLFWwindow* window,
     GLFWwindow* UIwindow,
@@ -153,7 +149,7 @@ void RenderWindow(
     SimulationGrid.PrintGridControls();
     if (ImGui::Button("Spawn Agent"))
     {
-        SpawnAgent(SimulationGrid);
+        SimulationGrid.AddAgentAtRandomPos();
     }
     if (ImGui::Checkbox("Auto Select Oldest Agent", &SimulationGrid.mAutoSelectOldestAgent))
     {

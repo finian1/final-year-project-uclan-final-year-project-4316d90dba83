@@ -10,17 +10,13 @@ class ComponentInput
 {
 public:
 
-	ComponentInput(int parentComponentID)
+	ComponentInput()
 	{
-		mParentComponentID = parentComponentID;
 	}
 
 	virtual float GetActivationValue(Agent* owner)
 	{
 		return 0.0f;
 	}
-
-protected:
-	int mParentComponentID = -1;
 };
 

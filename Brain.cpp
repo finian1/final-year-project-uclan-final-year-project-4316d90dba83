@@ -124,11 +124,11 @@ int Brain::ActivateRandomActionNeuron()
 void Brain::RandomizeLinks()
 {
 	//New refactored stuff
-
-	for (int firstLayer = 0; firstLayer < mLayerOrder.size(); firstLayer++)
+	for (int firstLayer = 0; firstLayer < mLayerOrder.size(); firstLayer++) //Move through each layer
 	{
 		for (int inNeuron = 0; inNeuron < GetLayer(mLayerOrder[firstLayer])->NeuronIDs.size(); inNeuron++)
 		{
+			//Link neuron to random neurons in further along layers
 			Neuron* currentInputNeuron = mNeurons.find(GetLayer(mLayerOrder[firstLayer])->NeuronIDs[inNeuron])->second;
 			currentInputNeuron->Bias = RandomNumber(-1.0f, 1.0f) / 100.0f;
 			for (int connectionLayer = firstLayer + 1; connectionLayer < mLayerOrder.size() && connectionLayer <= firstLayer + mMaxLinkDepth; connectionLayer++)
@@ -144,8 +144,6 @@ void Brain::RandomizeLinks()
 			}
 		}
 	}
-	//mLearningSpeed = utility::RandomNumber(0.1f, 0.3f);
-	//mLinkRetention = utility::RandomNumber(1.0f, 10.0f);
 }
 
 void Brain::AddNewComponentNeurons(Component* ComponentToAdd)
@@ -302,14 +300,6 @@ const Link Brain::GetLinkData(int ID)
 void Brain::StoreLinkShiftData(int ID, float Shift)
 {
 	mLinks.at(ID).WeightHistory += Shift;
-	/*if (mLinks.at(ID).Weight > 30.0f)
-	{
-		mLinks.at(ID).Weight = 30.0f;
-	}
-	else if (mLinks.at(ID).Weight < -30.0f)
-	{
-		mLinks.at(ID).Weight = -30.0f;
-	}*/
 }
 
 void Brain::ShiftLinkWeight(int ID, float amount)
